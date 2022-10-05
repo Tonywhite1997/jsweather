@@ -41,7 +41,7 @@ inputTextfield.addEventListener("keypress", (e) => {
 async function headerLocationDisplay(position) {
   const { longitude, latitude } = position.coords;
   const { data } = await axios(
-    `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIKEY}`
+    `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIKEY}`
   );
   if (data) {
     const tempInFahrenheit = Math.round(
@@ -204,11 +204,11 @@ async function successGettingLocation(position) {
 
   try {
     const { data } = await axios(
-      `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIKEY}`
+      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIKEY}`
     );
 
     const { data: futureData } = await axios(
-      `http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${APIKEY}`
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${APIKEY}`
     );
 
     if (data) {
@@ -218,6 +218,7 @@ async function successGettingLocation(position) {
     createFewDaysWeatherCard(futureData);
     getMap(latitude, longitude);
   } catch (error) {
+    console.log(error.message);
     spinner.style.display = "none";
     body.style.maxHeight = "100vh";
     main.innerHTML = `<h1>${error.message}</h1>`;
@@ -225,6 +226,7 @@ async function successGettingLocation(position) {
 }
 
 function errorGettingLocation(error) {
+  console.log(error.message);
   spinner.style.display = "none";
   body.style.height = "100vh";
   main.innerHTML = `<h1>${error}</h1>`;
