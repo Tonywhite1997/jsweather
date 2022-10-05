@@ -7,6 +7,8 @@ const searchBtn = document.querySelector(".fa-magnifying-glass");
 const myLocation = document.querySelector(".my--location");
 
 const weatherDataDiv = document.querySelector(".weather--data__div");
+const main = document.querySelector(".main");
+const body = document.querySelector(".body");
 const spinner = document.querySelector(".fa-spinner");
 
 async function convertCityToLatlon(query) {
@@ -50,7 +52,7 @@ async function headerLocationDisplay(position) {
   }
 }
 
-async function getMyCurrentPosition() {
+function getMyCurrentPosition() {
   navigator.geolocation.getCurrentPosition((position) => {
     headerLocationDisplay(position);
   });
@@ -200,24 +202,34 @@ async function successGettingLocation(position) {
   weatherDataDiv.innerHTML = "";
   const { latitude, longitude } = position.coords ? position.coords : position;
 
-  const { data } = await axios(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIKEY}`
-  );
+  try {
+    const { data } = await axios(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${APIKEY}`
+    );
 
-  const { data: futureData } = await axios(
-    `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${APIKEY}`
-  );
+    const { data: futureData } = await axios(
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${APIKEY}`
+    );
 
-  if (data) {
+    if (data) {
+      spinner.style.display = "none";
+    }
+    createTodayWeatherCard(data);
+    createFewDaysWeatherCard(futureData);
+    getMap(latitude, longitude);
+  } catch (error) {
+    console.log(error.message);
     spinner.style.display = "none";
+    body.style.maxHeight = "100vh";
+    main.innerHTML = `<h1>${error.message}</h1>`;
   }
-  createTodayWeatherCard(data);
-  createFewDaysWeatherCard(futureData);
-  getMap(latitude, longitude);
 }
 
 function errorGettingLocation(error) {
-  alert(error);
+  console.log(error.message);
+  spinner.style.display = "none";
+  body.style.height = "100vh";
+  main.innerHTML = `<h1>${error}</h1>`;
 }
 
 navigator.geolocation.getCurrentPosition(
