@@ -1,0 +1,157 @@
+@mixin  flex($direction) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: $direction;
+    gap: 1em;
+}
+.main{
+    position: relative;
+    min-height: 100vh;
+    padding-top: 10rem;
+    margin-bottom: 2em;
+    @include flex(column);
+
+    .fa-spinner{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50% -50%);
+        font-size: 3rem;
+        color: rgb(15, 92, 122);
+        animation: spinner 3s infinite forwards;
+    }
+
+    .weather--data__div{
+        margin-top: 2em;
+        padding: 0 1em;
+        // @include flex(row);
+        // gap: 2em;
+        // flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(4, 300px);
+        place-content: center;
+        gap: 2em;
+
+        .weather--card{
+            @include flex(column);
+            border-radius: 10px;
+            gap: .5em;
+            padding: .5em 0;
+            height: 500px;
+            width: 300px;
+            box-shadow: 0 0 5px 0 skyblue;
+            
+            .location--name{
+                color: rgb(15, 92, 122);  
+                font-size: 1.25rem;  
+            }
+
+            .icon--div{
+                @include flex(column);
+
+                p{
+                    color: rgb(15, 92, 122);
+                    font-weight: 600;
+                }
+            }
+
+            .date{
+                font-weight: 600;
+            }
+
+            .sun--data{
+                background-color: rgb(186, 233, 249);
+                width: 100%;
+                @include flex(row);
+                justify-content: space-between;
+                gap: 0;
+                padding: .3em 1em;
+                margin-bottom: 1em;
+
+                .sunrise, .sunset{
+                    font-weight: 500;
+                    @include flex(column);
+                    gap: 0;
+                    font-weight: 600;
+
+                    .title{
+                        color: rgb(15, 92, 122);
+                        font-weight: 700;
+                    }
+                }
+            }
+
+            .current--temperature, .current--temperatures{
+                box-shadow: 0 0 5px 2px skyblue;
+                color: rgb(15, 92, 122);
+                font-weight: 600;
+                height: 50px;
+                width: 50px;
+                cursor: pointer;
+                border-radius: 50%;
+                @include flex(row);
+            }
+
+            .current--weather{
+                width: 100%;
+                padding: 0 1em;
+                @include flex(row);
+                justify-content: space-between;
+                gap: .5em;
+                font-weight: 500;
+                color:rgb(15, 92, 122);
+            }
+
+        }
+        .future--weather__card{
+            @include flex(column);
+            border-radius: 10px;
+            gap: .5em;
+            padding: .5em 0;
+            min-height: 400px;
+            width: 300px;
+            box-shadow: 0 0 5px 0 skyblue;
+            @extend .weather--card;
+        }
+    }
+
+    #map{
+        height:500px;
+        width: 85%;
+        margin-top: 2em;
+        // box-shadow: 0 0 2px 2px rgb(112, 214, 254);
+    }
+}
+
+@keyframes spinner{
+    to{
+        transform: rotate(360deg);
+    }
+}
+
+@media screen and (max-width: 1360px) {
+    .main {
+
+        .weather--data__div {
+            grid-template-columns: repeat(3, 300px);
+        }
+    }
+}
+
+@media screen and (max-width: 1032px){
+    .main{
+
+        .weather--data__div{
+            grid-template-columns: repeat(2, 300px);
+        }
+    }
+}
+@media screen and (max-width: 730px){
+    .main{
+
+        .weather--data__div{
+            grid-template-columns:300px;
+        }
+    }
+}
