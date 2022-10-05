@@ -15,7 +15,7 @@ async function convertCityToLatlon(query) {
   //using positionStact API
   const PSKEY = "e89601534be0687f23fe68561fb00944";
   try {
-    const { data } = await axios("http://api.positionstack.com/v1/forward?", {
+    const { data } = await axios("https://api.positionstack.com/v1/forward?", {
       params: {
         access_key: PSKEY,
         query,
