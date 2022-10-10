@@ -13,21 +13,13 @@ const spinner = document.querySelector(".fa-spinner");
 
 const GEOAPIFYKEY = "b0c2a38a07074709b5de76f6585ea36e";
 async function convertCityToLatlon(query) {
-  //using positionStact API
+  //using geoapify API
   try {
-    // const { data } = await axios("https://api.positionstack.com/v1/forward?", {
-    //   params: {
-    //     access_key: PSKEY,
-    //     query,
-    //   },
-    // });
     const { data } = await axios(
       `https://api.geoapify.com/v1/geocode/search?text=${query}&apiKey=${GEOAPIFYKEY}`
     );
     const geometry = data.features[0].geometry.coordinates;
     const latLon = { longitude: geometry[0], latitude: geometry[1] };
-    // console.log(latLon);
-
     successGettingLocation(latLon);
   } catch (error) {
     main.innerHTML = `<h1>${error.message}</h1>`;
@@ -227,7 +219,7 @@ async function successGettingLocation(position) {
     }
     createTodayWeatherCard(data);
     createFewDaysWeatherCard(futureData);
-    getMap(latitude, longitude);
+    getMap(latitude, longitude, data.name);
   } catch (error) {
     console.log(error.message);
     spinner.style.display = "none";
@@ -248,14 +240,18 @@ navigator.geolocation.getCurrentPosition(
   errorGettingLocation
 );
 
-async function getMap(lat, lon) {
-  const layer = "precipitation_new";
-  const z = 1;
-  const x = 1;
-  const y = 1;
+async function getMap(lat, lon, city) {
+  const container = L.DomUtil.get("map");
+  if (container != null) {
+    container._leaflet_id = null;
+  }
   let map = L.map("map").setView([lat, lon], 13);
-  let marker = L.marker([lat, lon]).addTo(map);
-  L.tileLayer(
-    `https://tile.openweathermap.org/map/${layer}/${z}/${x}/${y}.png?appid=${APIKEY}`
-  ).addTo(map);
+  const osm = L.tileLayer(`https://tile.openstreetmap.org/{z}/{x}/{y}.png`, {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  });
+  osm.addTo(map);
+  const marker = L.marker([lat, lon]).addTo(map);
+  const popUp = marker.bindPopup(`${city}`).openPopup();
+  popUp.addTo(map);
 }
